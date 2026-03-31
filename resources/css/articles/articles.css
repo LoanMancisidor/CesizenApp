@@ -1,0 +1,185 @@
+/* On remplace .article-card par un format "Tuile/Carré" */
+.articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Crée des colonnes automatiques */
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.article-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    overflow: hidden; /* Pour que l'image suive l'arrondi de la card */
+    display: flex;
+    flex-direction: column; /* Image en haut, texte en dessous */
+    box-shadow: var(--shadow);
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(168, 230, 207, 0.2);
+}
+
+.article-card:hover {
+    transform: translateY(-10px);
+}
+
+/* L'image prend toute la largeur et une hauteur fixe */
+.article-thumb {
+    width: 100%;
+    height: 180px;
+    object-fit: contain; /* Pour éviter de couper l'image, on utilise contain */
+    border-radius: 0; /* On enlève l'arrondi individuel car la card est déjà arrondie */
+}
+
+.no-image {
+    width: 100%;
+    height: 180px;
+    background: #EDF2F7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A0AEC0;
+}
+
+/* Zone de texte sous l'image */
+.article-body {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.article-title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin: 0 0 15px 0;
+    color: var(--dark-text);
+}
+
+.article-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 1px solid #F1F5F9;
+    padding-top: 15px;
+}
+
+.article-info { flex-grow: 1; }
+.article-title { font-weight: 600; font-size: 1.1rem; margin: 0; }
+
+.btn-edit {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 15px;
+}
+
+.btn-delete {
+    background: none;
+    border: none;
+    color: var(--red);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Aperçu de l'image dans la page Edit */
+.current-image-preview {
+    margin: 10px 0 20px 0;
+}
+
+.edit-preview-img {
+    width: 100%;
+    max-height: 250px;
+    object-fit: contain;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--bg-light);
+}
+
+.no-image-placeholder {
+    width: 100%;
+    height: 150px;
+    background-color: var(--bg-light);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A0AEC0;
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.btn-cancel {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #A0AEC0;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.btn-cancel:hover {
+    color: var(--red);
+}
+
+/* Style pour la popup de suppression */
+
+/* Overlay (Fond sombre flouté) */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: none; /* Caché par défaut */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+/* La carte de la modale */
+.modal-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: var(--radius-lg);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-icon { font-size: 3rem; margin-bottom: 10px; }
+
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+/* Boutons de la modale */
+.btn-secondary {
+    flex: 1;
+    background: #EDF2F7;
+    border: none;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+    color: #4A5568;
+}
+
+.btn-danger-modal {
+    flex: 1;
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: 600;
+}

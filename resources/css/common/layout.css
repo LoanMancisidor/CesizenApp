@@ -1,0 +1,89 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-light);
+    margin: 0;
+    color: var(--dark-text);
+}
+
+.header-banner {
+    background-color: var(--primary-green);
+    padding: 0 40px;
+    height: 70px;
+    box-shadow: var(--shadow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-banner h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--white);
+}
+
+.header-banner a {
+    text-decoration: none;
+    color: var(--white);
+    display: flex;
+    align-items: center;
+}
+
+/* Optionnel : un petit effet au survol du titre pour montrer qu'il est cliquable */
+.header-banner a:hover h1 {
+    opacity: 0.9;
+}
+
+/* Classe active pour savoir sur quelle page on se trouve */
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.nav-menu {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-left: 40px;
+    gap: 15px;
+}
+
+.nav-link {
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-right { margin-left: auto; }
+
+.logout-link { color: #FFB3B3; }
+
+.logout-link:hover {
+    background-color: rgba(255, 118, 117, 0.2);
+    color: #ff7675;
+}
+
+.main-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}

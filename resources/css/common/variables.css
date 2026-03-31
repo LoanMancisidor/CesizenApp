@@ -1,0 +1,11 @@
+:root {
+    --primary-green: #22c05c;
+    --medium-green: #1da850; /* Version un peu plus sombre pour les labels */
+    --dark-text: #2D3748;
+    --bg-light: #F7FAFC;
+    --white: #FFFFFF;
+    --radius-lg: 25px;
+    --radius-md: 15px;
+    --shadow: 0 10px 25px rgba(0,0,0,0.05);
+    --red: #E53E3E;
+}
