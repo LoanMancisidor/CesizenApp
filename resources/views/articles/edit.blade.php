@@ -4,7 +4,6 @@
 <div class="form-container">
     <div class="card">
         <h2 style="margin-top: 0; color: var(--primary-green);">Modifier l'article</h2>
-        
         <form action="{{ route('articles.update', $article->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')

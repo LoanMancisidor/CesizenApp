@@ -43,7 +43,10 @@
     box-shadow: 0 5px 15px rgba(34, 192, 92, 0.3);
 }
 
-/* Formulaires */
+/* ==========================================================================
+   FORMULAIRES (Inputs, Textarea, Select)
+   ========================================================================== */
+
 .form-container {
     max-width: 600px;
     margin: 20px auto;
@@ -57,21 +60,43 @@ label {
     font-size: 0.9rem;
 }
 
-input[type="text"], input[type="email"], input[type="password"], textarea {
+/* --- Formulaires Globaux --- */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+input[type="number"], 
+textarea, 
+select {
     width: 100%;
     padding: 12px 15px;
     margin-top: 8px;
     border: 2px solid #E2E8F0;
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-md) !important;
     background-color: #F8FAFC;
     font-family: inherit;
     font-size: 1rem;
     transition: all 0.3s ease;
     box-sizing: border-box;
+    display: block;
+    outline: none;
 }
 
-input:focus, textarea:focus {
-    outline: none;
+/* --- Style spécifique au SELECT --- */
+select {
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    /* La flèche verte CESIZen */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2322c05c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 18px;
+    padding-right: 40px !important; /* Force l'espace pour la flèche */
+}
+
+/* --- Focus --- */
+input:focus, textarea:focus, select:focus {
     border-color: var(--primary-green);
     background-color: #FFFFFF;
     box-shadow: 0 0 0 4px rgba(34, 192, 92, 0.1);
@@ -99,7 +124,7 @@ input[type="file"] {
 }
 
 .stat-icon {
-    width: 55px;
+    width: 70px;
     height: 55px;
     border-radius: 15px;
     display: flex;
@@ -124,3 +149,157 @@ input[type="file"] {
     font-weight: 800;
     color: var(--dark-text);
 }
+
+.no-image {
+    width: 100%;
+    height: 180px;
+    background: #EDF2F7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #A0AEC0;
+}
+
+/* Tableaux Utilisateurs */
+.table-container {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+th {
+    text-align: left;
+    padding: 15px;
+    color: #718096;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--bg-light);
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid var(--bg-light);
+    color: var(--dark-text);
+    font-size: 0.95rem;
+}
+
+.role-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.role-admin { background: #ebf4ff; color: #3182ce; }
+.role-user { background: #f0fff4; color: var(--primary-green); }
+
+/* Container du menu utilisateur */
+.user-menu-container {
+    position: relative;
+    cursor: pointer;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 10px;
+    border-radius: var(--radius-md);
+    transition: background 0.3s;
+}
+
+.user-profile-trigger:hover {
+    background: rgba(34, 192, 92, 0.05);
+}
+
+/* Avatar circulaire avec initiale */
+.user-avatar {
+    width: 35px;
+    height: 35px;
+    background: var(--primary-green);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--dark-text);
+    font-size: 0.9rem;
+}
+
+/* Le menu déroulant */
+.user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 180px;
+    background: white;
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid #edf2f7;
+    display: none; /* Caché par défaut */
+    flex-direction: column;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.dropdown-item {
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--dark-text);
+    font-size: 0.85rem;
+    transition: background 0.2s;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background: #f8fafc;
+    color: var(--primary-green);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #edf2f7;
+    margin: 5px 0;
+}
+
+.logout-button {
+    color: #e53e3e;
+}
+
+.logout-button:hover {
+    background: #fff5f5;
+    color: #c53030;
+}
+
+.arrow-down {
+    border: solid #718096;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(45deg);
+    margin-bottom: 3px;
+}
+
+.btn-toggle-off { background-color: #718096 !important; }
+.btn-toggle-on { background-color: var(--primary-green) !important; }

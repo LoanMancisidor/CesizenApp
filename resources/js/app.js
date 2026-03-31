@@ -1,4 +1,5 @@
 import './bootstrap';
+import './delete-handler';
 
 import Alpine from 'alpinejs';
 

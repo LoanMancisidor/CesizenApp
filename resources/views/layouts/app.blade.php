@@ -8,7 +8,7 @@
     
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/delete-handler.js'])
 </head>
 <body>
 
@@ -19,21 +19,81 @@
 
         <nav class="nav-menu">
             <a href="{{ route('articles.index') }}" class="nav-link {{ request()->is('admin/articles*') ? 'active' : '' }}">Articles</a>
-            <a href="#" class="nav-link">Émotions</a>
-            <a href="#" class="nav-link">Utilisateurs</a>
-            
-            <form method="POST" action="{{ route('logout') }}" class="nav-right">
-                @csrf
-                <button type="submit" class="nav-link logout-link">
-                    Déconnexion
-                </button>
-            </form>
+            <a href="{{ route('emotions.index') }}" class="nav-link {{ request()->is('admin/emotions*') ? 'active' : '' }}">Émotions</a>
+            <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('admin/users*') ? 'active' : '' }}">Utilisateurs</a>
+            <a href="{{ route('roles.index') }}" class="nav-link {{ request()->is('admin/roles*') ? 'active' : '' }}">Rôles</a>
+            <div class="user-menu-container nav-right">
+                <div class="user-profile-trigger" onclick="toggleUserMenu(event)">
+                    <div class="user-avatar">
+                        👤
+                    </div>
+                    <span class="user-name">{{ Auth::user()->name }}</span>
+                    <i class="arrow-down"></i>
+                </div>
+
+                <div id="user-dropdown" class="user-dropdown">
+                    {{-- On force la couleur verte ici avec style --}}
+                    <a href="{{ route('users.edit', auth()->id()) }}" class="dropdown-item" style="color: var(--primary-green); font-weight: 600;">
+                        <span class="icon">👤</span> Mon profil
+                    </a>
+                    
+                    <div class="dropdown-divider"></div>
+
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="dropdown-item logout-button">
+                            <span class="icon">⏻</span> Déconnexion
+                        </button>
+                    </form>
+                </div>
+            </div>
         </nav>
     </header>
 
     <main class="main-content">
+        {{-- 1. Affichage des erreurs de validation (Global) --}}
+        @if ($errors->any())
+            <div class="card" style="background: #fff5f5; color: var(--red); padding: 15px; border-radius: var(--radius-md); margin-bottom: 20px; border: 1px solid var(--red);">
+                <ul style="margin: 0; padding-left: 20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        {{-- 2. Affichage du message de succès (Flash) --}}
+        @if(session('success'))
+            <div id="flash-message" class="card" style="background: #f0fff4; color: var(--primary-green); border: 1px solid #c6f6d5; margin-bottom: 20px; padding: 15px;">
+                {{ session('success') }}
+            </div>
+        @endif
+
         @yield('content')
     </main>
 
+    <script>
+    /**
+     * Gère l'ouverture/fermeture du menu profil
+     */
+    function toggleUserMenu(event) {
+        event.stopPropagation(); // Empêche la fermeture immédiate via l'event window
+        const dropdown = document.getElementById('user-dropdown');
+        const isVisible = dropdown.style.display === 'flex';
+        dropdown.style.display = isVisible ? 'none' : 'flex';
+    }
+
+    /**
+     * Ferme le menu si on clique n'importe où ailleurs sur la page
+     */
+    window.addEventListener('click', function(e) {
+        const container = document.querySelector('.user-menu-container');
+        const dropdown = document.getElementById('user-dropdown');
+        
+        if (container && !container.contains(e.target)) {
+            if (dropdown) dropdown.style.display = 'none';
+        }
+    });
+    </script>
 </body>
 </html>
