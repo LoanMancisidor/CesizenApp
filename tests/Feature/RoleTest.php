@@ -115,4 +115,12 @@ class RoleTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('roles.create');
     }
+
+    public function test_model_role_has_many_users_relation()
+    {
+        $role = Role::create(['libelle' => 'Client']);
+        $user = User::factory()->create(['role_id' => $role->id]);
+
+        $this->assertTrue($role->users->contains($user));
+    }
 }

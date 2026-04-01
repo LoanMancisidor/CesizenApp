@@ -149,4 +149,16 @@ class EmotionTest extends TestCase
         $response->assertSee('Tristesse');
         $response->assertSee('Peur');
     }
+
+    public function test_model_emotion_relations_parent_enfant()
+    {
+        $parent = Emotion::factory()->create(['nom' => 'Joie']);
+        $enfant = Emotion::factory()->enfant($parent->id)->create(['nom' => 'Extase']);
+
+        // Test de la relation parent (inverse)
+        $this->assertEquals($parent->id, $enfant->parent->id);
+
+        // Test de la relation enfants
+        $this->assertTrue($parent->enfants->contains($enfant));
+    }
 }

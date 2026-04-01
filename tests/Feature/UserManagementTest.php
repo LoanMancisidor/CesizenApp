@@ -79,7 +79,7 @@ class UserManagementTest extends TestCase
         $response = $this->put(route('users.update', $admin), [
             'name' => 'Admin',
             'email' => 'admin@test.fr',
-            'role_id' => $roleUser->id, // On tente de changer le rôle
+            'role_id' => $roleUser->id,
         ]);
 
         $response->assertSessionHasErrors('role_id');
@@ -91,15 +91,10 @@ class UserManagementTest extends TestCase
         $this->loginAdmin();
         $target = User::factory()->create(['active' => true]);
 
-        // Désactivation
         $this->patch(route('users.toggle', $target));
 
-        // Au lieu de assertFalse, on vérifie que la valeur est bien 0 (ou false)
         $this->assertEquals(0, $target->fresh()->active);
-        // OU encore mieux (plus lisible) :
-        $this->assertFalse((bool)$target->fresh()->active);
 
-        // Réactivation
         $this->patch(route('users.toggle', $target));
         $this->assertEquals(1, $target->fresh()->active);
     }
@@ -150,5 +145,25 @@ class UserManagementTest extends TestCase
 
         // On vérifie que le nouveau mot de passe fonctionne
         $this->assertTrue(Hash::check('nouveau_mdp_123', $target->fresh()->password));
+    }
+
+    public function test_model_user_is_admin_helper()
+    {
+        $roleAdmin = Role::create(['libelle' => 'Administrateur']);
+        $roleUser = Role::create(['libelle' => 'Utilisateur']);
+
+        $admin = User::factory()->create(['role_id' => $roleAdmin->id]);
+        $simpleUser = User::factory()->create(['role_id' => $roleUser->id]);
+
+        $this->assertTrue($admin->isAdmin());
+        $this->assertFalse($simpleUser->isAdmin());
+    }
+
+    public function test_user_belongs_to_role_relation()
+    {
+        $role = Role::create(['libelle' => 'Testeur']);
+        $user = User::factory()->create(['role_id' => $role->id]);
+
+        $this->assertEquals('Testeur', $user->role->libelle);
     }
 }
