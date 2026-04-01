@@ -55,7 +55,6 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
-        // Empêcher de changer son propre rôle
         if ($user->id === auth()->id() && $request->role_id != $user->role_id) {
             return back()->withErrors(['role_id' => 'Vous ne pouvez pas modifier votre propre rôle.']);
         }

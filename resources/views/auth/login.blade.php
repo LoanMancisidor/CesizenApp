@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion | CESIZen</title>
     @vite(['resources/css/app.css'])
 </head>
+
 <body class="auth-page">
-    
+
     <div class="form-container card">
         <div style="text-align: center; margin-bottom: 2rem;">
             <a href="/">
@@ -46,4 +48,5 @@
     </div>
 
 </body>
+
 </html>

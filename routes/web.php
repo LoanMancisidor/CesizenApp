@@ -8,25 +8,23 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// 1. La racine du site : on la protège par "auth" pour que personne ne voit le site sans être connecté.
 Route::get('/', [HomeController::class, 'index'])
-    ->middleware(['auth'])
+    ->middleware(['auth', 'admin'])
     ->name('home');
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::resource('articles', ArticleController::class);
     Route::resource('emotions', EmotionController::class);
     Route::get('emotions/parent/{emotion}', [EmotionController::class, 'showSubEmotions'])->name('emotions.parent');
     Route::resource('users', UserController::class);
     Route::resource('roles', RoleController::class);    
-    Route::patch('admin/users/{user}/toggle', [UserController::class, 'toggleStatus'])->name('users.toggle');
+    Route::patch('users/{user}/toggle', [UserController::class, 'toggleStatus'])->name('users.toggle');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// 4. Les routes d'authentification (Login, Register, Logout)
 require __DIR__.'/auth.php';

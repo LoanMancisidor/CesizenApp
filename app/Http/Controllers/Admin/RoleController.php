@@ -33,15 +33,13 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
-        // 1. Sécurité : Empêcher la suppression des rôles vitaux
         if (in_array($role->libelle, ['Administrateur', 'Utilisateur'])) {
             return response()->json([
-                'success' => false, 
+                'success' => false,
                 'message' => 'Impossible de supprimer un rôle système.'
             ], 403);
         }
 
-        // 2. Trouver l'ID du rôle de secours ("Utilisateur")
         $roleParDefaut = Role::where('libelle', 'Utilisateur')->first();
 
         if (!$roleParDefaut) {
@@ -51,11 +49,9 @@ class RoleController extends Controller
             ], 500);
         }
 
-        // 3. Reclassement des utilisateurs liés
-        // On change le role_id de tous les utilisateurs qui avaient le rôle qu'on supprime
+        // Reclassement des utilisateurs liés au rôle supprimé
         User::where('role_id', $role->id)->update(['role_id' => $roleParDefaut->id]);
 
-        // 4. Suppression du rôle
         $role->delete();
 
         return response()->json([

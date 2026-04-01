@@ -10,36 +10,37 @@ class ArticleController extends Controller
 {
     public function index()
     {
-        $articles = Article::all(); // On récupère tous les articles
-        return view('articles.index', compact('articles')); // On les envoie à la vue
+        $articles = Article::all();
+        return view('articles.index', compact('articles'));
     }
 
     public function create()
     {
-        return view('articles.create'); // Affiche ton formulaire
+        return view('articles.create');
     }
 
-    public function store(Request $request) {
-    $request->validate([
-        'titre' => 'required',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validation sécu
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'titre' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
-    $path = null;
-    if ($request->hasFile('image')) {
-        // Stocke l'image dans storage/app/public/articles
-        $path = $request->file('image')->store('articles', 'public');
+        $path = null;
+        if ($request->hasFile('image')) {
+            // Stocke l'image dans storage/app/public/articles
+            $path = $request->file('image')->store('articles', 'public');
+        }
+
+        Article::create([
+            'titre' => $request->titre,
+            'contenu' => $request->contenu,
+            'image_url' => $path,
+            'user_id' => auth()->id()
+        ]);
+
+        return redirect()->route('articles.index');
     }
-
-    Article::create([
-        'titre' => $request->titre,
-        'contenu' => $request->contenu,
-        'image_url' => $path,
-        'user_id' => 1
-    ]);
-    
-    return redirect()->route('articles.index');
-}
 
     public function edit(string $id)
     {
@@ -65,7 +66,6 @@ class ArticleController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            // Optionnel : Supprimer l'ancienne image du serveur ici pour ne pas encombrer Wamp
             $data['image_url'] = $request->file('image')->store('articles', 'public');
         }
 
@@ -82,12 +82,10 @@ class ArticleController extends Controller
         $article = Article::findOrFail($id);
         $article->delete();
 
-        // Si la requête est AJAX (Fetch), on renvoie du JSON
         if (request()->wantsJson()) {
             return response()->json(['success' => 'Article supprimé']);
         }
 
-        // Backup pour le mode classique
         return redirect()->route('articles.index');
     }
 }

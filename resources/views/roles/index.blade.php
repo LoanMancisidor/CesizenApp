@@ -24,29 +24,27 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($roles as $role)
-                <tr>
-                    <td>#{{ $role->id }}</td>
-                    <td>
-                        <span class="role-badge {{ $role->libelle === 'Administrateur' ? 'role-admin' : 'role-user' }}">
-                            {{ $role->libelle }}
-                        </span>
-                    </td>
-                    <td style="text-align: right;">
-                        {{-- On évite de supprimer les rôles de base pour ne pas casser la DB --}}
-                        @if(!in_array($role->libelle, ['Administrateur', 'Utilisateur']))
-                            <button type="button" 
-                                    class="btn-delete" 
-                                    data-url="{{ route('roles.destroy', $role->id) }}" 
+                @foreach ($roles as $role)
+                    <tr>
+                        <td>#{{ $role->id }}</td>
+                        <td>
+                            <span class="role-badge {{ $role->libelle === 'Administrateur' ? 'role-admin' : 'role-user' }}">
+                                {{ $role->libelle }}
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            {{-- On évite de supprimer les rôles de base pour ne pas casser la DB --}}
+                            @if (!in_array($role->libelle, ['Administrateur', 'Utilisateur']))
+                                <button type="button" class="btn-delete" data-url="{{ route('roles.destroy', $role->id) }}"
                                     data-users="{{ $role->users->pluck('name')->implode(', ') }}"
                                     onclick="deleteManager.openModal(this)">
-                                Supprimer
-                            </button>
-                        @else
-                            <small style="color: #a0aec0; font-style: italic;">Système</small>
-                        @endif
-                    </td>
-                </tr>
+                                    Supprimer
+                                </button>
+                            @else
+                                <small style="color: #a0aec0; font-style: italic;">Système</small>
+                            @endif
+                        </td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>

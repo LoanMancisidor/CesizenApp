@@ -15,21 +15,22 @@ class EmotionController extends Controller
         return view('emotions.index', compact('emotions'));
     }
 
-    public function create() {
+    public function create()
+    {
         $emotionsBase = Emotion::whereNull('parent_id')->get();
         return view('emotions.create', compact('emotionsBase'));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $request->validate([
             'nom' => 'required|string|max:255',
-            'parent_id' => 'nullable|exists:emotions,id', // On vérifie que le parent existe bien
+            'parent_id' => 'nullable|exists:emotions,id',
             'image_icone' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $data = $request->all();
 
-        // Si un parent_id est présent, on force le niveau à 2
         if (!empty($request->parent_id)) {
             $data['niveau'] = 2;
         } else {
@@ -48,13 +49,14 @@ class EmotionController extends Controller
     public function edit(Emotion $emotion)
     {
         $emotionsBase = Emotion::whereNull('parent_id')
-                                ->where('id', '!=', $emotion->id) // On évite qu'une émotion soit son propre parent
-                                ->get();
+            ->where('id', '!=', $emotion->id) // On évite qu'une émotion soit son propre parent
+            ->get();
 
         return view('emotions.edit', compact('emotion', 'emotionsBase'));
     }
 
-    public function update(Request $request, Emotion $emotion) {
+    public function update(Request $request, Emotion $emotion)
+    {
         $request->validate([
             'nom' => 'required|string|max:255',
             'niveau' => 'nullable|in:1,2',
@@ -79,22 +81,20 @@ class EmotionController extends Controller
         return redirect()->route('emotions.index')->with('success', 'Émotion mise à jour !');
     }
 
-    public function destroy(Emotion $emotion) {
-        // 1. Supprimer les émotions secondaires (enfants)
+    public function destroy(Emotion $emotion)
+    {
+        // Supprimer les émotions secondaires (enfants)
         foreach ($emotion->enfants as $enfant) {
-            // Supprimer l'icône de l'enfant s'il en a une
             if ($enfant->image_icone) {
                 Storage::disk('public')->delete($enfant->image_icone);
             }
             $enfant->delete();
         }
 
-        // 2. Supprimer l'icône du parent
         if ($emotion->image_icone) {
             Storage::disk('public')->delete($emotion->image_icone);
         }
 
-        // 3. Supprimer le parent
         $emotion->delete();
 
         return response()->json(['success' => true]);
