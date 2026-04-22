@@ -4,14 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
-use App\Models\User; // Import du modèle User nécessaire
+use App\Repositories\RoleRepository;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
+    protected $roleRepository;
+
+    /**
+     * Injection du RoleRepository
+     */
+    public function __construct(RoleRepository $roleRepository)
+    {
+        $this->roleRepository = $roleRepository;
+    }
+
     public function index()
     {
-        $roles = Role::with('users')->get(); // On charge les users pour le pluck() dans la vue
+        $roles = $this->roleRepository->getAllWithUsers();
         return view('roles.index', compact('roles'));
     }
 
@@ -26,13 +36,14 @@ class RoleController extends Controller
             'libelle' => 'required|unique:roles|max:255',
         ]);
 
-        Role::create($request->all());
+        $this->roleRepository->create($request->all());
 
         return redirect()->route('roles.index')->with('success', 'Rôle créé avec succès !');
     }
 
     public function destroy(Role $role)
     {
+        // 1. Protection des rôles système (Logique de contrôle)
         if (in_array($role->libelle, ['Administrateur', 'Utilisateur'])) {
             return response()->json([
                 'success' => false,
@@ -40,19 +51,14 @@ class RoleController extends Controller
             ], 403);
         }
 
-        $roleParDefaut = Role::where('libelle', 'Utilisateur')->first();
+        $deleted = $this->roleRepository->deleteAndReassign($role);
 
-        if (!$roleParDefaut) {
+        if (!$deleted) {
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur : Le rôle "Utilisateur" par défaut est introuvable.'
             ], 500);
         }
-
-        // Reclassement des utilisateurs liés au rôle supprimé
-        User::where('role_id', $role->id)->update(['role_id' => $roleParDefaut->id]);
-
-        $role->delete();
 
         return response()->json([
             'success' => true,

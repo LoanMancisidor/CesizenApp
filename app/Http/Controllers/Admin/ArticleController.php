@@ -3,14 +3,21 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Article;
+use App\Repositories\ArticleRepository;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
+    protected $articleRepository;
+
+    public function __construct(ArticleRepository $articleRepository)
+    {
+        $this->articleRepository = $articleRepository;
+    }
+
     public function index()
     {
-        $articles = Article::all();
+        $articles = $this->articleRepository->getAll();
         return view('articles.index', compact('articles'));
     }
 
@@ -22,70 +29,57 @@ class ArticleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'titre' => 'required',
+            'titre' => 'required|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $path = null;
+        $data = $request->only('titre', 'contenu');
+        $data['user_id'] = auth()->id();
+
         if ($request->hasFile('image')) {
-            // Stocke l'image dans storage/app/public/articles
-            $path = $request->file('image')->store('articles', 'public');
+            $data['image_url'] = $request->file('image')->store('articles', 'public');
         }
 
-        Article::create([
-            'titre' => $request->titre,
-            'contenu' => $request->contenu,
-            'image_url' => $path,
-            'user_id' => auth()->id()
-        ]);
+        $this->articleRepository->create($data);
 
-        return redirect()->route('articles.index');
+        return redirect()->route('articles.index')->with('success', 'Article créé !');
     }
 
     public function edit(string $id)
     {
-        $article = Article::findOrFail($id); // Trouve l'article ou renvoie une erreur 404
+        $article = $this->articleRepository->findById($id);
         return view('articles.edit', compact('article'));
     }
 
-    /**
-     * Enregistre les modifications
-     */
     public function update(Request $request, string $id)
     {
-        $article = Article::findOrFail($id);
+        $article = $this->articleRepository->findById($id);
 
         $request->validate([
             'titre' => 'required|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $data = [
-            'titre' => $request->titre,
-            'contenu' => $request->contenu,
-        ];
+        $data = $request->only('titre', 'contenu');
 
         if ($request->hasFile('image')) {
             $data['image_url'] = $request->file('image')->store('articles', 'public');
         }
 
-        $article->update($data);
+        $this->articleRepository->update($article, $data);
 
         return redirect()->route('articles.index')->with('success', 'Article mis à jour !');
     }
 
-    /**
-     * Supprime l'article
-     */
     public function destroy(string $id)
     {
-        $article = Article::findOrFail($id);
-        $article->delete();
+        $article = $this->articleRepository->findById($id);
+        $this->articleRepository->delete($article);
 
         if (request()->wantsJson()) {
             return response()->json(['success' => 'Article supprimé']);
         }
 
-        return redirect()->route('articles.index');
+        return redirect()->route('articles.index')->with('success', 'Article supprimé !');
     }
 }

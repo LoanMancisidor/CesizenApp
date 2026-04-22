@@ -6,7 +6,7 @@
         <div class="header-title">
             <h2 style="margin: 0;">Gestion des Articles</h2>
             <p style="color: #718096; margin: 5px 0 0 0; font-size: 0.9rem;">
-                {{ $articles->count() }} article(s) publié(s) sur la plateforme.
+                <span id="article-count">{{ $articles->count() }}</span> article(s) publié(s) sur la plateforme.
             </p>
         </div>
 

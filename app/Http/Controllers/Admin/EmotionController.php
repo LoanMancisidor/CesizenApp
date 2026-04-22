@@ -4,20 +4,28 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Emotion;
+use App\Repositories\EmotionRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class EmotionController extends Controller
 {
+    protected $emotionRepository;
+
+    public function __construct(EmotionRepository $emotionRepository)
+    {
+        $this->emotionRepository = $emotionRepository;
+    }
+
     public function index()
     {
-        $emotions = Emotion::whereNull('parent_id')->get();
+        $emotions = $this->emotionRepository->getBaseEmotions();
         return view('emotions.index', compact('emotions'));
     }
 
     public function create()
     {
-        $emotionsBase = Emotion::whereNull('parent_id')->get();
+        $emotionsBase = $this->emotionRepository->getBaseEmotions();
         return view('emotions.create', compact('emotionsBase'));
     }
 
@@ -31,25 +39,20 @@ class EmotionController extends Controller
 
         $data = $request->all();
 
-        if (!empty($request->parent_id)) {
-            $data['niveau'] = 2;
-        } else {
-            $data['niveau'] = 1;
-            $data['parent_id'] = null;
-        }
-
         if ($request->hasFile('image_icone')) {
             $data['image_icone'] = $request->file('image_icone')->store('emotions', 'public');
         }
 
-        Emotion::create($data);
+        $this->emotionRepository->create($data);
+
         return redirect()->route('emotions.index')->with('success', 'Émotion créée !');
     }
 
     public function edit(Emotion $emotion)
     {
+        // On récupère les parents potentiels (excluant l'émotion elle-même)
         $emotionsBase = Emotion::whereNull('parent_id')
-            ->where('id', '!=', $emotion->id) // On évite qu'une émotion soit son propre parent
+            ->where('id', '!=', $emotion->id)
             ->get();
 
         return view('emotions.edit', compact('emotion', 'emotionsBase'));
@@ -59,50 +62,36 @@ class EmotionController extends Controller
     {
         $request->validate([
             'nom' => 'required|string|max:255',
-            'niveau' => 'nullable|in:1,2',
             'parent_id' => 'nullable|exists:emotions,id',
             'image_icone' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $data = $request->all();
 
-        // Logique de niveau automatique selon le parent
-        $data['niveau'] = !empty($request->parent_id) ? 2 : 1;
-        if (empty($request->parent_id)) $data['parent_id'] = null;
-
         if ($request->hasFile('image_icone')) {
+            // Suppression de l'ancien fichier s'il existe
             if ($emotion->image_icone) {
                 Storage::disk('public')->delete($emotion->image_icone);
             }
             $data['image_icone'] = $request->file('image_icone')->store('emotions', 'public');
         }
 
-        $emotion->update($data);
+        $this->emotionRepository->update($emotion, $data);
+
         return redirect()->route('emotions.index')->with('success', 'Émotion mise à jour !');
     }
 
     public function destroy(Emotion $emotion)
     {
-        // Supprimer les émotions secondaires (enfants)
-        foreach ($emotion->enfants as $enfant) {
-            if ($enfant->image_icone) {
-                Storage::disk('public')->delete($enfant->image_icone);
-            }
-            $enfant->delete();
-        }
-
-        if ($emotion->image_icone) {
-            Storage::disk('public')->delete($emotion->image_icone);
-        }
-
-        $emotion->delete();
+        // On délègue toute la suppression (enfants + images) au repository
+        $this->emotionRepository->deleteWithChildren($emotion);
 
         return response()->json(['success' => true]);
     }
 
     public function showSubEmotions(Emotion $emotion)
     {
-        $emotions = Emotion::where('parent_id', $emotion->id)->get();
+        $emotions = $this->emotionRepository->getChildren($emotion);
         $parentNom = $emotion->nom;
 
         return view('emotions.index', compact('emotions', 'parentNom'));
