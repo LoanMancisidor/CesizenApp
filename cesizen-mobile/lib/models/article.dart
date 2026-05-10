@@ -1,17 +1,10 @@
 class Article {
   final int id;
-  final String titre; // Correspond au SQL
-  final String contenu; // Correspond au SQL
+  final String titre;
+  final String contenu;
   final String? imageUrl;
-  final int userId;
 
-  Article({
-    required this.id,
-    required this.titre,
-    required this.contenu,
-    this.imageUrl,
-    required this.userId,
-  });
+  Article({required this.id, required this.titre, required this.contenu, this.imageUrl});
 
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
@@ -19,7 +12,6 @@ class Article {
       titre: json['titre'],
       contenu: json['contenu'],
       imageUrl: json['image_url'],
-      userId: json['user_id'],
     );
   }
 }
