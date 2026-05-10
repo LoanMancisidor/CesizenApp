@@ -4,26 +4,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Article;
 use App\Models\Emotion;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\UserEmotionController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
-// --- ROUTES PUBLIQUES (Visiteurs) ---
-// Accessible par Flutter sans être connecté
 Route::get('/articles', function () {
     return Article::latest()->get()->map(function ($article) {
-        // On transforme le chemin relatif en URL absolue pour Flutter
-        $article->image_url = $article->image_url
-            ? asset('storage/' . $article->image_url)
-            : null;
+        $article->image_url = $article->image_url ? asset('storage/' . $article->image_url) : null;
         return $article;
     });
 });
 
-// Récupérer les émotions de base pour que le visiteur voit ce qui est possible
 Route::get('/emotions-preview', function () {
     return Emotion::whereNull('parent_id')->get();
 });
@@ -31,17 +24,18 @@ Route::get('/emotions-preview', function () {
 
 // --- ROUTES PROTÉGÉES (Utilisateurs connectés) ---
 Route::middleware('auth:sanctum')->group(function () {
-
-    // Récupérer les infos de l'utilisateur connecté
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::put('/user/password', [AuthController::class, 'updatePassword']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-    // Ici tu ajouteras plus tard les routes pour :
-    // - Enregistrer une émotion dans le tracker
-    // - Voir son historique personnel
+    Route::get('/emotions', function () {
+        return Emotion::with('enfants')->whereNull('parent_id')->get();
+    });
+
+    Route::post('/user-emotions', [UserEmotionController::class, 'store']);
+    Route::get('/user-emotions/stats', [UserEmotionController::class, 'stats']);
+    Route::get('/user-emotions/history', [UserEmotionController::class, 'index']);
+    Route::delete('/user-emotions/{id}', [UserEmotionController::class, 'destroy']);
 });
-
-// --- ROUTE D'AUTHENTIFICATION (Pour Flutter) ---
-// On crée une route simple pour que Flutter puisse envoyer email/password et recevoir un Token
-Route::post('/login', [\App\Http\Controllers\Api\AuthController::class, 'login']);
