@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@cesizen.fr',
             'active' => 1,
-            'password' => bcrypt('password'),
+            'password' => bcrypt('Admin1234!'),
         ]);
 
         User::create([
@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'name' => 'Utilisateur Test',
             'email' => 'user@cesizen.fr',
             'active' => 1,
-            'password' => bcrypt('password'),
+            'password' => bcrypt('User1234!'),
         ]);
     }
 }
