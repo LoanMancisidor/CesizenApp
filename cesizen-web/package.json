@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
-        "test:cov": "php artisan test --coverage-html coverage"
+        "test:cov": "php -d xdebug.mode=coverage artisan test --coverage-html coverage"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
