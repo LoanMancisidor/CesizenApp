@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../repositories/emotion_repository.dart';
 import '../models/emotion.dart';
 import 'history_screen.dart';
@@ -52,14 +53,13 @@ class _EmotionScreenState extends State<EmotionScreen> {
                 ...emotion.enfants.map((sousEmotion) => ListTile(
                   title: Text(sousEmotion.nom),
                   // ON AJOUTE L'IMAGE ICI
-                  leading: sousEmotion.imageIcone != null
-                      ? Image.network(
-                          "http://10.0.2.2:8000/storage/${sousEmotion.imageIcone}",
+                  leading: sousEmotion.imageIcone.isNotEmpty
+                      ? SvgPicture.network(
+                          "http://10.0.2.2:8000/images/${sousEmotion.imageIcone}",
                           width: 32,
                           height: 32,
                           fit: BoxFit.contain,
-                          errorBuilder: (context, error, stackTrace) => 
-                              const Icon(Icons.sentiment_satisfied, color: Colors.teal),
+                          placeholderBuilder: (_) => const Icon(Icons.sentiment_satisfied, color: Colors.teal),
                         )
                       : const Icon(Icons.subdirectory_arrow_right, color: Colors.teal),
                   trailing: const Icon(Icons.add_circle_outline, color: Colors.teal),
@@ -151,14 +151,13 @@ class _EmotionScreenState extends State<EmotionScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Si une image existe en base, on l'affiche, sinon on met un soleil par défaut
-                      emotion.imageIcone != null
-                          ? Image.network(
-                              "http://10.0.2.2:8000/storage/${emotion.imageIcone}",
+                      emotion.imageIcone.isNotEmpty
+                          ? SvgPicture.network(
+                              "http://10.0.2.2:8000/images/${emotion.imageIcone}",
                               height: 60,
                               width: 60,
                               fit: BoxFit.contain,
-                              // Gestion d'erreur si l'image ne charge pas
-                              errorBuilder: (context, error, stackTrace) => 
+                              placeholderBuilder: (_) =>
                                   const Icon(Icons.sentiment_satisfied, size: 40, color: Colors.teal),
                             )
                           : const Icon(Icons.wb_sunny_outlined, size: 40, color: Colors.teal),
