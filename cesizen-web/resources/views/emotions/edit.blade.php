@@ -24,7 +24,7 @@
         @if($emotion->image_icone)
             <div class="current-image-preview">
                 <p style="font-size: 0.8rem; color: #718096;">Icône actuelle :</p>
-                <img src="{{ asset('storage/' . $emotion->image_icone) }}" class="edit-preview-img" style="width: 60px; height: 60px;">
+                <img src="{{ asset('images/' . $emotion->image_icone) }}" class="edit-preview-img" style="width: 60px; height: 60px;">
             </div>
         @endif
         <input type="file" name="image_icone" id="image_icone" accept="image/*">

@@ -33,7 +33,7 @@
 
                 <div class="stat-icon" style="background: #f0fff4; margin: 0 auto 15px auto; font-size: 2.2rem; width: 70px; height: 70px; border-radius: 50%;">
                     @if($emotion->image_icone)
-                        <img src="{{ asset('storage/' . $emotion->image_icone) }}" style="width: 45px; height: 45px; object-fit: contain;">
+                        <img src="{{ asset('images/' . $emotion->image_icone) }}" style="width: 45px; height: 45px; object-fit: contain;">
                     @endif
                 </div>
 
