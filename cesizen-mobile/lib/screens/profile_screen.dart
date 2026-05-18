@@ -13,43 +13,40 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Mon Compte")),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
+            const SizedBox(height: 20),
             const CircleAvatar(
-              radius: 50, 
-              backgroundColor: Colors.teal, 
+              radius: 50,
+              backgroundColor: Colors.teal,
               child: Icon(Icons.person, size: 50, color: Colors.white)
             ),
             const SizedBox(height: 30),
             Card(
-            child: ListTile(
+              child: ListTile(
                 leading: const Icon(Icons.lock_reset, color: Colors.teal),
                 title: const Text("Réinitialiser le mot de passe"),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
-                Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                    builder: (context) => ChangePasswordScreen(token: token),
+                      builder: (context) => ChangePasswordScreen(token: token),
                     ),
-                );
+                  );
                 },
+              ),
             ),
-            ),
-            
-            const Spacer(),
-            
-            // Bouton de déconnexion
+            const SizedBox(height: 30),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
                 onPressed: () async {
+                  final nav = Navigator.of(context);
                   await _authRepository.logout(token);
-                  // On redirige vers la navigation "visiteur" (token null)
-                  Navigator.pushAndRemoveUntil(
-                    context,
+                  nav.pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const MainNavigation(token: null)),
                     (route) => false,
                   );

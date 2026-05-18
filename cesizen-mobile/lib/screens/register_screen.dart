@@ -43,38 +43,49 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(title: const Text("Créer un compte")),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(30.0),
-        child: Column(
-          children: [
-            const Icon(Icons.person_add_outlined, size: 80, color: Colors.teal),
-            const SizedBox(height: 30),
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: "Nom complet", border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Builder(
+              builder: (context) {
+                final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+                return Column(
+                  children: [
+                    SizedBox(height: isLandscape ? 10 : 20),
+                    Icon(Icons.person_add_outlined, size: isLandscape ? 50 : 80, color: Colors.teal),
+                    SizedBox(height: isLandscape ? 15 : 30),
+                    TextField(
+                      controller: _nameController,
+                      decoration: InputDecoration(labelText: "Nom complet", border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _emailController,
+                      decoration: InputDecoration(labelText: "Email", border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(labelText: "Mot de passe", border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 55,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _handleRegister,
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : const Text("S'inscrire", style: TextStyle(color: Colors.white, fontSize: 18)),
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: "Email", border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(labelText: "Mot de passe", border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleRegister,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
-                child: _isLoading 
-                  ? const CircularProgressIndicator(color: Colors.white) 
-                  : const Text("S'inscrire", style: TextStyle(color: Colors.white, fontSize: 18)),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

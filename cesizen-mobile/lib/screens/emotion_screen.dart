@@ -128,10 +128,17 @@ class _EmotionScreenState extends State<EmotionScreen> {
           }
 
           final emotions = snapshot.data!;
-          return GridView.builder(
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final crossAxisCount = constraints.maxWidth < 480
+                  ? 2
+                  : constraints.maxWidth < 720
+                      ? 3
+                      : 4;
+              return GridView.builder(
             padding: const EdgeInsets.all(20),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
               crossAxisSpacing: 20,
               mainAxisSpacing: 20,
             ),
@@ -175,6 +182,8 @@ class _EmotionScreenState extends State<EmotionScreen> {
                   ),
                 ),
               );
+            },
+          );
             },
           );
         },

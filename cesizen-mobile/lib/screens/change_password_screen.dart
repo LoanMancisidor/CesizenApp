@@ -42,40 +42,45 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Sécurité du compte")),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(25.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _oldController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: "Ancien mot de passe", border: OutlineInputBorder()),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _oldController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: "Ancien mot de passe", border: OutlineInputBorder()),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _newController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: "Nouveau mot de passe", border: OutlineInputBorder()),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: _confirmController,
+                  obscureText: true,
+                  decoration: const InputDecoration(labelText: "Confirmer le nouveau mot de passe", border: OutlineInputBorder()),
+                ),
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _handleUpdate,
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text("Mettre à jour", style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _newController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: "Nouveau mot de passe", border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _confirmController,
-              obscureText: true,
-              decoration: const InputDecoration(labelText: "Confirmer le nouveau mot de passe", border: OutlineInputBorder()),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleUpdate,
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
-                child: _isLoading 
-                  ? const CircularProgressIndicator(color: Colors.white) 
-                  : const Text("Mettre à jour", style: TextStyle(color: Colors.white)),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

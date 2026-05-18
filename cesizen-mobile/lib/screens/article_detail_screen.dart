@@ -15,13 +15,18 @@ class ArticleDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (article.imageUrl != null)
-              Image.network(
-                article.imageUrl!,
-                width: double.infinity,
-                height: 250,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => 
-                    Container(height: 250, color: Colors.grey[300], child: const Icon(Icons.image_not_supported)),
+              Builder(
+                builder: (context) {
+                  final imgHeight = MediaQuery.of(context).size.height * 0.3;
+                  return Image.network(
+                    article.imageUrl!,
+                    width: double.infinity,
+                    height: imgHeight,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        Container(height: imgHeight, color: Colors.grey[300], child: const Icon(Icons.image_not_supported)),
+                  );
+                },
               ),
             Padding(
               padding: const EdgeInsets.all(20.0),

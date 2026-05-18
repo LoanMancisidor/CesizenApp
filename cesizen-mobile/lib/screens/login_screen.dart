@@ -45,52 +45,62 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(30.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 80),
-            const Icon(Icons.self_improvement, size: 100, color: Colors.teal),
-            const Text("CESIZen", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal)),
-            const SizedBox(height: 50),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
-            ),
-            const SizedBox(height: 20),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Mot de passe",
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-                prefixIcon: const Icon(Icons.lock_outline),
-              ),
-            ),
-            const SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              height: 55,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                ),
-                child: _isLoading
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text("Se connecter", style: TextStyle(color: Colors.white, fontSize: 18)),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: Builder(
+              builder: (context) {
+                final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+                return Column(
+                  children: [
+                    SizedBox(height: isLandscape ? 20 : 80),
+                    Icon(Icons.self_improvement, size: isLandscape ? 60 : 100, color: Colors.teal),
+                    const Text("CESIZen", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.teal)),
+                    SizedBox(height: isLandscape ? 20 : 50),
+                    TextField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: "Email",
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                        prefixIcon: const Icon(Icons.email_outlined),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        labelText: "Mot de passe",
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+                        prefixIcon: const Icon(Icons.lock_outline),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 55,
+                      child: ElevatedButton(
+                        onPressed: _isLoading ? null : _handleLogin,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        ),
+                        child: _isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : const Text("Se connecter", style: TextStyle(color: Colors.white, fontSize: 18)),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+                      },
+                      child: const Text("Pas encore de compte ? S'inscrire", style: TextStyle(color: Colors.teal)),
+                    )
+                  ],
+                );
               },
-              child: const Text("Pas encore de compte ? S'inscrire", style: TextStyle(color: Colors.teal)),
-            )
-          ],
+            ),
+          ),
         ),
       ),
     );
