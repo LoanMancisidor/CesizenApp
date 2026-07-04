@@ -1,0 +1,27 @@
+name: 01-2 - Integration - SonarCloud
+
+on:
+  workflow_call
+
+jobs:
+  Quality_Web:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-coverage-report
+          path: cesizen-web
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v3.1.0
+        with:
+          projectBaseDir: ./cesizen-web
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

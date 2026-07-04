@@ -1,30 +1,55 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cesizen_mobile/main.dart';
+import 'package:cesizen_mobile/models/article.dart';
+import 'package:cesizen_mobile/screens/login_screen.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('Article', () {
+    test('fromJson parse les champs attendus', () {
+      final article = Article.fromJson({
+        'id': 1,
+        'titre': 'Comprendre le stress',
+        'contenu': 'Un article sur la sante mentale.',
+        'image_url': 'https://example.com/image.png',
+      });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+      expect(article.id, 1);
+      expect(article.titre, 'Comprendre le stress');
+      expect(article.contenu, 'Un article sur la sante mentale.');
+      expect(article.imageUrl, 'https://example.com/image.png');
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    test('fromJson accepte une image_url absente', () {
+      final article = Article.fromJson({
+        'id': 2,
+        'titre': 'Sans image',
+        'contenu': 'Contenu',
+        'image_url': null,
+      });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      expect(article.imageUrl, isNull);
+    });
+  });
+
+  group('LoginScreen', () {
+    testWidgets('affiche les champs email/mot de passe et le bouton de connexion',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const MaterialApp(home: LoginScreen()));
+
+      expect(find.text('CESIZen'), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Email'), findsOneWidget);
+      expect(find.widgetWithText(TextField, 'Mot de passe'), findsOneWidget);
+      expect(find.widgetWithText(ElevatedButton, 'Se connecter'), findsOneWidget);
+    });
+
+    testWidgets('permet de saisir un email', (WidgetTester tester) async {
+      await tester.pumpWidget(const MaterialApp(home: LoginScreen()));
+
+      await tester.enterText(find.widgetWithText(TextField, 'Email'), 'user@cesizen.fr');
+      await tester.pump();
+
+      expect(find.text('user@cesizen.fr'), findsOneWidget);
+    });
   });
 }

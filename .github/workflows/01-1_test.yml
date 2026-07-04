@@ -1,0 +1,64 @@
+name: 01-1 - Integration - Tests
+
+on:
+  workflow_call
+
+jobs:
+  Test_Web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cesizen-web
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          extensions: mbstring, pdo_sqlite, bcmath, intl, zip
+          coverage: xdebug
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Prepare env
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run tests with coverage
+        run: php artisan test --coverage-clover=coverage.xml
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-coverage-report
+          path: cesizen-web/coverage.xml
+          retention-days: 1
+
+  Test_Mobile:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cesizen-mobile
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test

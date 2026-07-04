@@ -25,6 +25,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
     setState(() => _isLoading = false);
 
+    if (!mounted) return;
+
     if (token != null) {
       Navigator.pushReplacement(
         context,

@@ -26,6 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _isLoading = false);
 
+    if (!mounted) return;
+
     if (token != null) {
     Navigator.pushAndRemoveUntil(
       context,

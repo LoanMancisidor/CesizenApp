@@ -67,7 +67,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
                     Navigator.pop(context);
                     _confirmAndSave(sousEmotion);
                   },
-                )).toList(),
+                )),
                 const SizedBox(height: 20),
               ],
             ),
@@ -82,6 +82,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
   void _confirmAndSave(Emotion emotion) async {
     try {
       bool success = await _repository.sendUserEmotion(emotion.id, widget.token);
+      if (!mounted) return;
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -92,7 +93,7 @@ class _EmotionScreenState extends State<EmotionScreen> {
         );
       }
     } catch (e) {
-      print("Erreur : $e");
+      debugPrint("Erreur : $e");
     }
   }
 

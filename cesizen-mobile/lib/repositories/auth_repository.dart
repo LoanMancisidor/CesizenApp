@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
@@ -19,17 +20,17 @@ Future<String?> login(String email, String password) async {
       }),
     );
 
-    print("Réponse Laravel: ${response.body}");
+    debugPrint("Réponse Laravel: ${response.body}");
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return data['token'];
     } else {
-      print("Erreur de validation ou autre: ${response.statusCode}");
+      debugPrint("Erreur de validation ou autre: ${response.statusCode}");
       return null;
     }
   } catch (e) {
-    print("Erreur de connexion: $e");
+    debugPrint("Erreur de connexion: $e");
     return null;
   }
 }

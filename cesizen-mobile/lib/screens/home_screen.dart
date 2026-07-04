@@ -4,6 +4,8 @@ import '../repositories/article_repository.dart';
 import 'article_detail_screen.dart'; // N'oublie pas d'importer l'écran de détail
 
 class HomeScreen extends StatelessWidget {
+  HomeScreen({super.key});
+
   final ArticleRepository _articleRepository = ArticleRepository();
 
   @override

@@ -1,0 +1,38 @@
+name: 02-1 - Deployment - Docker GHCR
+
+on:
+  workflow_call:
+    inputs:
+      docker-mode:
+        required: false
+        type: string
+        default: canary
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }} # orga/repo
+
+jobs:
+  Build-Push-Docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Registry login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Downcase Image Name
+        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Web Build Push
+        uses: docker/build-push-action@v5
+        with:
+          context: cesizen-web
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}-web:${{ inputs.docker-mode }}
