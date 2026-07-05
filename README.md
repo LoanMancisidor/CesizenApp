@@ -8,7 +8,7 @@ Application de gestion du bien-être et des émotions, composée d'une interface
 
 ### Application web (`cesizen-web`)
 - [WAMP](https://www.wampserver.com/) (ou tout serveur Apache/MySQL équivalent)
-- PHP >= 8.2
+- PHP >= 8.4
 - Composer
 - Node.js >= 18 + npm
 - MySQL

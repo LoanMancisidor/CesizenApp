@@ -12,7 +12,7 @@ COPY vite.config.js ./
 RUN npm run build
 
 # --- Stage 2 : application PHP ---
-FROM php:8.2-cli-alpine AS app
+FROM php:8.4-cli-alpine AS app
 
 RUN apk add --no-cache \
         icu-dev \
