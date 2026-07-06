@@ -6,17 +6,16 @@ on:
 jobs:
   Quality_Snyk_Web:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: cesizen-web
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/php@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --severity-threshold=high
+      - name: Setup Snyk CLI
+        uses: snyk/actions/setup@master
+
+      - name: Run Snyk test (cesizen-web)
+        working-directory: cesizen-web
+        run: snyk test --severity-threshold=high
