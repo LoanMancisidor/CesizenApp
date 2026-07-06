@@ -24,7 +24,7 @@ jobs:
       - name: Trivy Scan Web
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}-web:canary
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}-web:latest
           format: table
           exit-code: '1'
           output: trivy-results-web.txt

@@ -1,10 +1,8 @@
 #!/bin/sh
 set -e
 
-echo "En attente de la base de donnees (${DB_HOST}:${DB_PORT})..."
-until php artisan db:show > /dev/null 2>&1; do
-    sleep 2
-done
+mkdir -p database
+touch database/database.sqlite
 
 php artisan config:clear
 php artisan migrate --force

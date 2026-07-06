@@ -18,8 +18,9 @@ RUN apk add --no-cache \
         icu-dev \
         oniguruma-dev \
         libzip-dev \
+        sqlite-dev \
     && docker-php-ext-install \
-        pdo_mysql \
+        pdo_sqlite \
         mbstring \
         bcmath \
         intl \

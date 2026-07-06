@@ -1,21 +1,61 @@
 name: 02-4 - Deploy - ZAP Scan
 
 on:
-  workflow_call:
-    inputs:
-      target-host:
-        required: true
-        type: string
+  workflow_call
 
 jobs:
   Web_Zap_Scan:
     runs-on: ubuntu-latest
+    permissions:
+      packages: read
+      issues: write
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Downcase Image Name
+        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare env for local run
+        run: |
+          echo "WEB_IMAGE=ghcr.io/${{ env.IMAGE_NAME_LOWER }}-web:latest" > .env
+          echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
+          echo "APP_URL=http://localhost" >> .env
+
+      - name: Start app locally (image tout juste construite)
+        run: |
+          docker compose pull
+          docker compose up -d
+
+      - name: Wait for app to respond
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost > /dev/null; then
+              echo "App is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "App did not respond in time"
+          docker compose logs
+          exit 1
+
       - name: Run ZAP Scan
         uses: zaproxy/action-baseline@v0.14.0
         with:
-          target: 'http://${{ inputs.target-host }}'
+          target: 'http://localhost'
           fail_action: true
           artifact_name: 'web_zap_scan'
           issue_title: 'ZAP Web Scan Report'
+
+      - name: Stop app
+        if: always()
+        run: docker compose down -v

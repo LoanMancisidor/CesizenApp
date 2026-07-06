@@ -1,101 +1,12 @@
 name: 02-3 - Deploy
 
 on:
-  workflow_call:
-    outputs:
-      vm-hostname:
-        description: "Hostname public de la VM deployee"
-        value: ${{ jobs.AzureServer.outputs.vm-hostname }}
+  workflow_call
 
 jobs:
-  AzureServer:
-    runs-on: ubuntu-22.04
-
-    outputs:
-      vm-hostname: ${{ steps.bicep-deploy.outputs.hostname }}
-
-    env:
-      ResourceGroupName: "CesizenApp"
-      ResourceGroupLocation: "francecentral"
-      VmName: "vm-cesizen"
+  Deploy_Render:
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Azure CLI Resource Group
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az group create --name ${{ env.ResourceGroupName }} --location ${{ env.ResourceGroupLocation }}
-
-      - name: Checkout Bicep
-        uses: actions/checkout@v4
-
-      - name: Azure Bicep Deploy
-        id: bicep-deploy
-        uses: azure/arm-deploy@v2
-        with:
-          resourceGroupName: ${{ env.ResourceGroupName }}
-          scope: resourcegroup
-          template: ./main.bicep
-          parameters: >
-            adminUsername=${{ secrets.AZURE_VM_LOGIN }}
-            adminPasswordOrKey=${{ secrets.AZURE_VM_PASSWORD }}
-            vmName=${{ env.VmName }}
-            vmSize=Standard_B2s
-
-      - name: Open Port 80 on Security Group
-        uses: azure/CLI@v2
-        with:
-          inlineScript: |
-            az network nsg rule create --resource-group ${{ env.ResourceGroupName }} --nsg-name SecGroupNet --name PortWeb-80 --priority 100 --direction Inbound --access Allow --protocol Tcp --source-address-prefixes "*" --source-port-ranges "*" --destination-address-prefixes "*" --destination-port-ranges 80
-
-      - name: Install Docker on VM
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ steps.bicep-deploy.outputs.hostname }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.AZURE_VM_LOGIN }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          script: |
-            curl -o install_docker.sh https://raw.githubusercontent.com/Base-Auto/scripts/refs/heads/main/install_docker_quick.sh
-            sudo bash ./install_docker.sh
-
-      - name: Send Compose File
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ steps.bicep-deploy.outputs.hostname }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.AZURE_VM_LOGIN }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          source: "./docker-compose.yml"
-          target: "."
-
-      - name: Downcase Image Name
-        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
-
-      - name: Start compose file
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ steps.bicep-deploy.outputs.hostname }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.AZURE_VM_LOGIN }}
-          password: ${{ secrets.AZURE_VM_PASSWORD }}
-          script: |
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-            echo WEB_IMAGE=ghcr.io/${{ env.IMAGE_NAME_LOWER }}-web:canary > .env
-            echo APP_KEY=${{ secrets.APP_KEY }} >> .env
-            echo APP_URL=http://${{ steps.bicep-deploy.outputs.hostname }} >> .env
-            echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
-            echo DB_USERNAME=${{ secrets.DB_USERNAME }} >> .env
-            echo DB_PASSWORD=${{ secrets.DB_PASSWORD }} >> .env
-
-            docker pull ghcr.io/${{ env.IMAGE_NAME_LOWER }}-web:canary
-
-            docker compose up -d
+      - name: Trigger Render deploy
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"

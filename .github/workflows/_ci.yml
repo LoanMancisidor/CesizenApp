@@ -1,0 +1,46 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Test:
+    uses: ./.github/workflows/01-1_test.yml
+
+  Quality_SonarCloud:
+    needs: [Test]
+    uses: ./.github/workflows/01-2_sonarcloud.yml
+    secrets: inherit
+
+  Quality_Snyk:
+    needs: [Test]
+    uses: ./.github/workflows/01-3_snyk.yml
+    secrets: inherit
+
+  Build_Push_Docker:
+    needs: [Quality_SonarCloud, Quality_Snyk]
+    uses: ./.github/workflows/02-1_docker-ghcr.yml
+    permissions:
+      contents: read
+      packages: write
+
+  Trivy_Scan_Package:
+    needs: [Build_Push_Docker]
+    uses: ./.github/workflows/02-2_trivy-scan.yml
+    permissions:
+      packages: read
+
+  Zap_Scan:
+    needs: [Trivy_Scan_Package]
+    uses: ./.github/workflows/02-4_zap-scan.yml
+    secrets: inherit
+    permissions:
+      packages: read
+      issues: write
+
+  Deploy:
+    needs: [Zap_Scan]
+    uses: ./.github/workflows/02-3_deploy.yml
+    secrets: inherit

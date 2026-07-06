@@ -1,12 +1,7 @@
 name: 02-1 - Deployment - Docker GHCR
 
 on:
-  workflow_call:
-    inputs:
-      docker-mode:
-        required: false
-        type: string
-        default: canary
+  workflow_call
 
 env:
   REGISTRY: ghcr.io
@@ -35,4 +30,4 @@ jobs:
         with:
           context: cesizen-web
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}-web:${{ inputs.docker-mode }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_LOWER }}-web:latest
