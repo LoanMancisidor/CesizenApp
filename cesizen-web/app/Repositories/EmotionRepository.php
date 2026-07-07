@@ -39,7 +39,9 @@ class EmotionRepository
 
     private function deleteSingle(Emotion $e)
     {
-        if ($e->image_icone) Storage::disk('public')->delete($e->image_icone);
+        if ($e->image_icone) {
+            Storage::disk('public')->delete($e->image_icone);
+        }
         return $e->delete();
     }
 }

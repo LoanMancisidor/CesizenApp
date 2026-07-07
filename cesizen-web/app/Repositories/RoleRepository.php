@@ -25,7 +25,9 @@ class RoleRepository
     public function deleteAndReassign(Role $role)
     {
         $roleParDefaut = $this->findByLibelle('Utilisateur');
-        if (!$roleParDefaut) return false;
+        if (!$roleParDefaut) {
+            return false;
+        }
 
         User::where('role_id', $role->id)->update(['role_id' => $roleParDefaut->id]);
         return $role->delete();
