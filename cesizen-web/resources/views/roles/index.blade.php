@@ -36,8 +36,7 @@
                             {{-- On évite de supprimer les rôles de base pour ne pas casser la DB --}}
                             @if (!in_array($role->libelle, ['Administrateur', 'Utilisateur']))
                                 <button type="button" class="btn-delete" data-url="{{ route('roles.destroy', $role->id) }}"
-                                    data-users="{{ $role->users->pluck('name')->implode(', ') }}"
-                                    onclick="deleteManager.openModal(this)">
+                                    data-users="{{ $role->users->pluck('name')->implode(', ') }}">
                                     Supprimer
                                 </button>
                             @else

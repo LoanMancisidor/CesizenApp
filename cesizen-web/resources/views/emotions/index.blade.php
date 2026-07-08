@@ -55,8 +55,7 @@
                             class="btn-delete" 
                             data-url="{{ route('emotions.destroy', $emotion->id) }}" 
                             {{-- On récupère les noms des enfants --}}
-                            data-children="{{ $emotion->enfants->pluck('nom')->implode(', ') }}"
-                            onclick="deleteManager.openModal(this)">
+                            data-children="{{ $emotion->enfants->pluck('nom')->implode(', ') }}">
                         Supprimer
                     </button>
                 </div>

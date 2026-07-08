@@ -22,9 +22,10 @@ class SecurityHeaders
         $response->headers->set('Referrer-Policy', 'strict-origin-when-cross-origin');
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
         $response->headers->set('Cross-Origin-Embedder-Policy', 'require-corp');
+        $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
         $response->headers->set(
             'Content-Security-Policy',
-            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; ".
+            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; ".
             "img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; ".
             "frame-ancestors 'self'; form-action 'self'"
         );

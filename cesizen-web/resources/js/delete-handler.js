@@ -107,4 +107,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (confirmBtn) {
         confirmBtn.onclick = () => window.deleteManager.confirmDelete();
     }
+
+    const cancelBtn = document.getElementById("modal-cancel-btn");
+    if (cancelBtn) {
+        cancelBtn.onclick = () => window.deleteManager.closeModal();
+    }
+
+    document.addEventListener("click", function (e) {
+        const trigger = e.target.closest(".btn-delete");
+        if (trigger) {
+            window.deleteManager.openModal(trigger);
+        }
+    });
 });

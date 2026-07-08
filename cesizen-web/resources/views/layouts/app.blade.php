@@ -9,7 +9,7 @@
 
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/delete-handler.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/delete-handler.js', 'resources/js/user-menu.js'])
 </head>
 
 <body>
@@ -29,7 +29,7 @@
             <a href="{{ route('roles.index') }}"
                 class="nav-link {{ request()->is('admin/roles*') ? 'active' : '' }}">Rôles</a>
             <div class="user-menu-container nav-right">
-                <div class="user-profile-trigger" onclick="toggleUserMenu(event)">
+                <div class="user-profile-trigger">
                     <div class="user-avatar">
                         👤
                     </div>
@@ -80,30 +80,6 @@
 
         @yield('content')
     </main>
-
-    <script>
-        /**
-         * Gère l'ouverture/fermeture du menu profil
-         */
-        function toggleUserMenu(event) {
-            event.stopPropagation(); // Empêche la fermeture immédiate via l'event window
-            const dropdown = document.getElementById('user-dropdown');
-            const isVisible = dropdown.style.display === 'flex';
-            dropdown.style.display = isVisible ? 'none' : 'flex';
-        }
-
-        /**
-         * Ferme le menu si on clique n'importe où ailleurs sur la page
-         */
-        window.addEventListener('click', function(e) {
-            const container = document.querySelector('.user-menu-container');
-            const dropdown = document.getElementById('user-dropdown');
-
-            if (container && !container.contains(e.target)) {
-                if (dropdown) dropdown.style.display = 'none';
-            }
-        });
-    </script>
 </body>
 
 </html>

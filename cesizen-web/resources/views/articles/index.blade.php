@@ -45,8 +45,7 @@
                         style="margin-top: 15px; border-top: 1px solid #f1f5f9; padding-top: 15px; gap: 15px;">
                         <a href="{{ route('articles.edit', $article->id) }}" class="btn-edit" style="margin:0;">Modifier</a>
 
-                        <button type="button" class="btn-delete" data-url="{{ route('articles.destroy', $article->id) }}"
-                            onclick="deleteManager.openModal(this)">
+                        <button type="button" class="btn-delete" data-url="{{ route('articles.destroy', $article->id) }}">
                             Supprimer
                         </button>
                     </div>

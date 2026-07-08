@@ -67,8 +67,7 @@
                             @if ($user->id !== auth()->id())
                                 <button type="button" class="btn-delete"
                                     style="font-size: 0.85rem; border: none; background: none; cursor: pointer;"
-                                    data-url="{{ route('users.destroy', $user->id) }}"
-                                    onclick="deleteManager.openModal(this)">
+                                    data-url="{{ route('users.destroy', $user->id) }}">
                                     Supprimer
                                 </button>
                             @else

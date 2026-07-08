@@ -22,7 +22,7 @@
         </div>
 
         <div class="modal-footer">
-            <button onclick="deleteManager.closeModal()" class="btn-secondary">Annuler</button>
+            <button id="modal-cancel-btn" class="btn-secondary">Annuler</button>
             <button id="confirm-delete-btn" class="btn-danger-modal">Supprimer</button>
         </div>
     </div>
