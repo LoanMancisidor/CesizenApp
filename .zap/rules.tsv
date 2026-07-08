@@ -30,3 +30,11 @@
 10021	IGNORE	.*build/.*
 10021	IGNORE	.*images/.*
 10021	IGNORE	.*robots\.txt.*
+
+# CSP style-src 'unsafe-inline' : 88 attributs style="" inline repartis sur
+# 14 fichiers Blade. Les remplacer tous par des classes CSS serait un
+# refactor visuel disproportionne (risque de regression sur chaque page)
+# pour un gain de securite limite : du CSS injecte ne peut pas executer de
+# JS (contrairement a script-src, deja durci sans unsafe-inline), seulement
+# une exfiltration de donnees tres ciblee via selecteurs CSS.
+10055	IGNORE	.*

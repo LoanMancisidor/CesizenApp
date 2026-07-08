@@ -23,6 +23,7 @@ class SecurityHeaders
         $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
         $response->headers->set('Cross-Origin-Embedder-Policy', 'require-corp');
         $response->headers->set('Cross-Origin-Opener-Policy', 'same-origin');
+        $response->headers->set('Cross-Origin-Resource-Policy', 'same-origin');
         $response->headers->set(
             'Content-Security-Policy',
             "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; ".
