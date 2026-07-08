@@ -21,15 +21,19 @@
 10111	IGNORE	.*
 10112	IGNORE	.*
 
-# X-Content-Type-Options absent sur les fichiers statiques (CSS/images/
-# robots.txt) : php artisan serve (PHP built-in server pointe sur public/)
-# sert ces fichiers directement quand ils existent sur disque, sans jamais
-# passer par le kernel HTTP de Laravel ni son middleware. Limite structurelle
-# du serveur de dev utilise en prod (pas de nginx/php-fpm separe), risque
-# negligeable vu qu'il ne s'agit que d'assets statiques non executables.
+# Fichiers statiques (CSS/images/robots.txt) : php artisan serve (PHP
+# built-in server pointe sur public/) les sert directement quand ils
+# existent sur disque, sans jamais passer par le kernel HTTP de Laravel ni
+# son middleware. Limite structurelle du serveur de dev utilise en prod
+# (pas de nginx/php-fpm separe), risque negligeable vu qu'il ne s'agit que
+# d'assets statiques non executables. Concerne X-Content-Type-Options
+# (10021) et Cross-Origin-Resource-Policy (90004).
 10021	IGNORE	.*build/.*
 10021	IGNORE	.*images/.*
 10021	IGNORE	.*robots\.txt.*
+90004	IGNORE	.*build/.*
+90004	IGNORE	.*images/.*
+90004	IGNORE	.*robots\.txt.*
 
 # CSP style-src 'unsafe-inline' : 88 attributs style="" inline repartis sur
 # 14 fichiers Blade. Les remplacer tous par des classes CSS serait un
