@@ -20,3 +20,13 @@
 # reponse liee a la session), pas des vulnerabilites en soi.
 10111	IGNORE	.*
 10112	IGNORE	.*
+
+# X-Content-Type-Options absent sur les fichiers statiques (CSS/images/
+# robots.txt) : php artisan serve (PHP built-in server pointe sur public/)
+# sert ces fichiers directement quand ils existent sur disque, sans jamais
+# passer par le kernel HTTP de Laravel ni son middleware. Limite structurelle
+# du serveur de dev utilise en prod (pas de nginx/php-fpm separe), risque
+# negligeable vu qu'il ne s'agit que d'assets statiques non executables.
+10021	IGNORE	.*build/.*
+10021	IGNORE	.*images/.*
+10021	IGNORE	.*robots\.txt.*
