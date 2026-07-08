@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -17,6 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+
+        // Render (comme la plupart des PaaS) termine le HTTPS a son edge et
+        // transmet en HTTP en interne : sans ca, Laravel croit que la
+        // requete est en clair et genere des URLs/redirections en http://,
+        // en plus d'omettre le flag Secure sur les cookies de session.
+        $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_FOR
+            | Request::HEADER_X_FORWARDED_HOST
+            | Request::HEADER_X_FORWARDED_PORT
+            | Request::HEADER_X_FORWARDED_PROTO);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
