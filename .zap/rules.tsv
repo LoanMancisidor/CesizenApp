@@ -1,22 +1,22 @@
 # Regles ZAP explicitement ignorees, avec justification.
-# Format : <rule id>	IGNORE	(optionnel: pattern d'URL)
+# Format : <rule id>	<action>	<url regex (obligatoire, .* = toutes)>
 
 # Cookie XSRF-TOKEN volontairement non-HttpOnly (protection CSRF Laravel,
 # doit rester lisible par le JS cote client). laravel_session, lui,
 # est deja HttpOnly (config/session.php).
-10010	IGNORE
+10010	IGNORE	.*
 
 # Redirection Laravel par defaut (ex: / -> /login) : le corps HTML minimal
 # genere par RedirectResponse ne contient aucune information sensible,
 # juste un lien vers la cible deja visible dans l'en-tete Location.
-10044	IGNORE
+10044	IGNORE	.*
 
 # Application entierement derriere authentification : les reponses HTML
 # volontairement non mises en cache (pas de Cache-Control storable) sont
 # le comportement attendu, pas une faiblesse.
-10049	IGNORE
+10049	IGNORE	.*
 
 # Marqueurs informatifs de ZAP (detection d'un formulaire de login / d'une
 # reponse liee a la session), pas des vulnerabilites en soi.
-10111	IGNORE
-10112	IGNORE
+10111	IGNORE	.*
+10112	IGNORE	.*
