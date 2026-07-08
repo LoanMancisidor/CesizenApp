@@ -45,6 +45,8 @@
                 Se connecter
             </button>
         </form>
+
+        <p style="text-align: center; margin-top: 1.5rem; font-size: 0.7rem; color: #cbd5e0;">Build : avant démo</p>
     </div>
 
 </body>
