@@ -36,9 +36,13 @@ COPY --from=assets /app/public/build ./public/build
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress \
     && chmod +x docker/entrypoint.sh \
-    && mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache \
-    && chown -R www-data:www-data storage bootstrap/cache
+    && mkdir -p storage/framework/{cache,sessions,views} storage/logs bootstrap/cache database \
+    && chown -R www-data:www-data storage bootstrap/cache database
 
-EXPOSE 80
+# Port < 1024 non atteignable par un utilisateur non privilegie : le
+# conteneur ecoute sur 8080 en interne, expose en 80 cote hote/plateforme
+# via le mapping de port (docker-compose ou detection automatique Render).
+USER www-data
+EXPOSE 8080
 
 ENTRYPOINT ["docker/entrypoint.sh"]
