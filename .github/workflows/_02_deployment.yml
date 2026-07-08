@@ -1,0 +1,11 @@
+name: 02 - Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Deploy:
+    uses: ./.github/workflows/02-3_deploy.yml
+    secrets: inherit

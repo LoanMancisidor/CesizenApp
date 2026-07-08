@@ -1,4 +1,4 @@
-name: CI/CD
+name: 01 - Integration
 
 on:
   push:
@@ -39,8 +39,3 @@ jobs:
     permissions:
       packages: read
       issues: write
-
-  Deploy:
-    needs: [Zap_Scan]
-    uses: ./.github/workflows/02-3_deploy.yml
-    secrets: inherit
