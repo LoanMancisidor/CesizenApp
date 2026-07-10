@@ -19,6 +19,7 @@ RUN apk add --no-cache \
         oniguruma-dev \
         libzip-dev \
         sqlite-dev \
+    && apk upgrade --no-cache c-ares \
     && docker-php-ext-install \
         pdo_sqlite \
         mbstring \
